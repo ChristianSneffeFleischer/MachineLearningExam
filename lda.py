@@ -8,13 +8,13 @@ class LDA:
     def __init__(self, k = 2):
         self.k = k # Amount of discriminant variables
         
-    def fit_transform(self, X, y):
-
-        classes = np.unique(y)
-        m = X.shape[1] # Amount of features
+    def fit(self, X_train, y_train):
+        '''Fit discriminant subspace to training data.'''
+        classes = np.unique(y_train)
+        m = X_train.shape[1] # Amount of features
 
         # Compute total mean of all samples
-        mu = np.mean(X, axis = 0).reshape(m, 1) # Reshape to be vertical vector
+        mu = np.mean(X_train, axis = 0).reshape(m, 1) # Reshape to be vertical vector
 
         # Initiate within- and between-class scatter matrices as empty
         S_W = np.zeros((m, m))
@@ -23,7 +23,7 @@ class LDA:
         # Compute within- and between-class scatter matrices by iterating over each class
         for cl_i in classes:
 
-            X_i = X[y == cl_i] # Matrix of data points for class i
+            X_i = X_train[y_train == cl_i] # Matrix of data points for class i
             mu_i = np.mean(X_i, axis = 0).reshape(m, 1) # Sample mean of class
 
             # Initiate withing scatter matrix for class i as empty
@@ -50,16 +50,19 @@ class LDA:
         eigenvalues = eigenvalues[sorted_indices]
         eigenvectors = eigenvectors[:, sorted_indices]
 
-        # Select the top k eigenvectors
-        selected_eigenvectors = eigenvectors[:, :self.k]
-
-        # Make sure numbers in eigenvectors are not complex
-        selected_eigenvectors = np.real(selected_eigenvectors)
+        # Select the top k eigenvectors and avoid complex values
+        selected_eigenvectors = np.real(eigenvectors[:, :self.k])
 
         # Normalize eigenvectors
-        normalized_eigenvectors = selected_eigenvectors / np.linalg.norm(selected_eigenvectors, axis = 0)
+        self.normalized_eigenvectors = selected_eigenvectors / np.linalg.norm(selected_eigenvectors, axis = 0)
 
-        # Project the data onto the normalized discriminant subspace
-        X_projected = np.dot(X, normalized_eigenvectors)
-
+    def transform(self, X):
+        '''Project input data onto the normalized discriminant subspace.'''
+        X_projected = np.dot(X, self.normalized_eigenvectors)
         return X_projected
+    
+    def fit_transform(self, X_train, y_train):
+        '''Fit discriminant subspace to training data and project training data.'''
+        self.fit(X_train, y_train)
+        X_train_projected = self.transform(X_train)
+        return X_train_projected
