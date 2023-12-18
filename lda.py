@@ -10,7 +10,7 @@ class LDA:
         
     def fit_transform(self, X, y):
 
-        class_labels = np.unique(y)
+        classes = np.unique(y)
         m = X.shape[1] # Amount of features
 
         # Compute total mean of all samples
@@ -20,11 +20,11 @@ class LDA:
         S_W = np.zeros((m, m))
         S_B = np.zeros((m, m))
 
-        # Compute within- and between-class scatter matrices by iterating over each class i
-        for label in class_labels:
+        # Compute within- and between-class scatter matrices by iterating over each class
+        for cl_i in classes:
 
-            X_i = X[y == label] # Matrix of data points for class i
-            mu_i = np.mean(X_i, axis = 0).reshape(m, 1) # Sample mean of class i
+            X_i = X[y == cl_i] # Matrix of data points for class i
+            mu_i = np.mean(X_i, axis = 0).reshape(m, 1) # Sample mean of class
 
             # Initiate withing scatter matrix for class i as empty
             S_i = np.zeros((m, m))
@@ -36,7 +36,7 @@ class LDA:
             S_W += S_i
 
             # Update between-class scatter matrix using amount of samples, as well as class and total means
-            n_i = X_i.shape[0] # Amount of samples in class i
+            n_i = X_i.shape[0] # Amount of samples in class
             S_B += n_i * np.dot(mu_i - mu, (mu_i - mu).T)
 
         # Compute the inverse of the within-class scatter matrix
