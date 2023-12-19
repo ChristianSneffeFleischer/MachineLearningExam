@@ -12,8 +12,12 @@ class bayes_nonparametric:
     '''
 
     def __init__(self, h):
+        '''Initialize model.
+        
+        Params:
+            h (float): Bandwidth parameter for kernel density estimation.
+        '''
         self.h = h # Bandwidth
-        pass
 
     def fit(self, X_train, y_train):
         '''
@@ -33,21 +37,21 @@ class bayes_nonparametric:
 
     def calculate_class_priors(self):
         '''Calculate class prior probabilities from the training data.'''
-        class_counts = {k: np.sum(self.y_train == k) for k in self.classes}
+        class_counts = {cl: np.sum(self.y_train == cl) for cl in self.classes}
         n_samples = len(self.y_train)
-        self.priors = {k: count/n_samples for k, count in class_counts.items()}
+        self.priors = {cl: count/n_samples for cl, count in class_counts.items()}
         
     def fit_kde(self, x):
         '''Kernel density estimate for given input point x.'''
 
         # Initialize multivariate feature distribution for each class
-        multivariate_estimates = {k: 1 for k in self.classes}
+        multivariate_estimates = {cl: 1 for cl in self.classes}
 
         # Iterate over each class
-        for k in self.classes:
+        for cl in self.classes:
 
-            class_data = self.X_train[self.y_train == k] # Data in X_train belonging to class k
-            n_total = class_data.shape[0] # Number of observations in class k
+            class_data = self.X_train[self.y_train == cl] # Data in X_train belonging to class
+            n_total = class_data.shape[0] # Number of observations in class
 
             # Iterate over each feature in class_data
             for i, X_i in enumerate(class_data.T):
@@ -60,7 +64,7 @@ class bayes_nonparametric:
                 kernel_estimate = n_observations / (n_total * 2 * self.h)
 
                 # Update the multivariate feature distribution estimate
-                multivariate_estimates[k] *= kernel_estimate
+                multivariate_estimates[cl] *= kernel_estimate
 
         return multivariate_estimates
 
@@ -71,12 +75,12 @@ class bayes_nonparametric:
         likelihoods = self.fit_kde(x)
 
         # Compute evidence for each class
-        evidence = sum(likelihoods[k] * self.priors[k] for k in self.classes)
+        evidence = sum(likelihoods[cl] * self.priors[cl] for cl in self.classes)
         if evidence == 0: # In case of evidence is zero, add small constant
             evidence += 1e-12 
 
         # Compute posterior probabilities for each class
-        posteriors = {k: likelihoods[k] * self.priors[k] / evidence for k in self.classes}
+        posteriors = {cl: likelihoods[cl] * self.priors[cl] / evidence for cl in self.classes}
 
         return posteriors
     
@@ -91,5 +95,5 @@ class bayes_nonparametric:
         return max(posteriors, key = posteriors.get)
     
     def predict(self, X):
-        '''Predict the class for an input array X.'''
-        return [self._predict(x) for x in X]
+        '''Predict the classes for an input array X.'''
+        return np.array([self._predict(x) for x in X])

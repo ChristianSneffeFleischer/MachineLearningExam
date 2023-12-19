@@ -21,23 +21,23 @@ class LDA:
         S_B = np.zeros((m, m))
 
         # Compute within- and between-class scatter matrices by iterating over each class
-        for k in classes:
+        for cl in classes:
 
-            X_k = X_train[y_train == k] # Matrix of data points for class k
-            mu_k = np.mean(X_k, axis = 0).reshape(m, 1) # Sample mean of class k
+            X_i = X_train[y_train == cl] # Matrix of data points for class i
+            mu_i = np.mean(X_i, axis = 0).reshape(m, 1) # Sample mean of class i
 
             # Initiate withing scatter matrix for class k as empty
-            S_k = np.zeros((m, m))
-            for row in X_k:
+            S_i = np.zeros((m, m))
+            for row in X_i:
                 row = row.reshape(m, 1) # Reshape row to be vertical vector
-                S_k += np.dot(row - mu_k, (row - mu_k).T)
+                S_i += np.dot(row - mu_i, (row - mu_i).T)
 
             # Add scatter matrix of class k to within-class scatter matrix
-            S_W += S_k
+            S_W += S_i
 
             # Update between-class scatter matrix using amount of samples, as well as class and total means
-            n_k = X_k.shape[0] # Amount of samples in class
-            S_B += n_k * np.dot(mu_k - mu, (mu_k - mu).T)
+            n_i = X_i.shape[0] # Amount of samples in class
+            S_B += n_i * np.dot(mu_i - mu, (mu_i - mu).T)
 
         # Compute the inverse of the within-class scatter matrix
         S_W_inv = np.linalg.inv(S_W)
