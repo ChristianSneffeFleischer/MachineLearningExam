@@ -34,7 +34,7 @@ class KNN:
 
     def get_neighbor_labels(self, x):
         '''Get the labels of the k nearest neighbors to input x.'''
-        
+
         # Compute distance between x and all observations in the training set
         distances = [np.linalg.norm(x - obs) for obs in self.X_train]
 
@@ -52,12 +52,12 @@ class KNN:
         # Compute classes for the selected amount of nearest neighbors
         k_nearest_labels = self.get_neighbor_labels(x)
 
-        # Calculate weighted votes based on amount of neighbors in each class and prior distribution
-        weighted_votes = {cl: k_nearest_labels.count(cl) * self.priors[cl] for cl in self.classes}
+        # Calculate weighted votes based on amount of neighbors in each class
+        weighted_votes = {cl: k_nearest_labels.count(cl) / self.n_neighbors for cl in self.classes}
 
         # Return highest weighted vote class
         return max(weighted_votes, key = weighted_votes.get)
     
     def predict(self, X):
         '''Predict the classes for an input array X.'''
-        return [self._predict(x) for x in X]
+        return np.array([self._predict(x) for x in X])
