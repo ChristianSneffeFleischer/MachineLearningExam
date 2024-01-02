@@ -5,8 +5,8 @@ import numpy as np
 # LDA class
 
 class LDA:
-    def __init__(self, n_components = 2):
-        self.n_components = n_components # Amount of discriminant variables
+    def __init__(self, n_variables = 2):
+        self.n_variables = n_variables # Amount of discriminant variables
         
     def fit(self, X_train, y_train):
         '''Fit discriminant subspace to training data.'''
@@ -51,7 +51,7 @@ class LDA:
         eigenvectors = eigenvectors[:, sorted_indices]
 
         # Select the top k eigenvectors and avoid complex values
-        selected_eigenvectors = np.real(eigenvectors[:, :self.n_components])
+        selected_eigenvectors = np.real(eigenvectors[:, :self.n_variables])
 
         # Normalize eigenvectors
         self.normalized_eigenvectors = selected_eigenvectors / np.linalg.norm(selected_eigenvectors, axis = 0)
