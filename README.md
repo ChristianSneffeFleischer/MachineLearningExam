@@ -1,2 +1,0 @@
-# MachineLearningExam
-Clothing Classification
