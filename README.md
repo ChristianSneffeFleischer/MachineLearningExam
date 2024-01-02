@@ -8,7 +8,7 @@ Project for Clothing classification, attempting to predict type of clothing from
 ### Dependencies
 
 
-*To run classify (mentioned version or newer):*
+*To run code (mentioned version or newer):*
 
 * Python 3
 
