@@ -26,7 +26,7 @@ class LDA:
             X_i = X_train[y_train == cl] # Matrix of data points for class i
             mu_i = np.mean(X_i, axis = 0).reshape(m, 1) # Sample mean of class i
 
-            # Initiate withing scatter matrix for class k as empty
+            # Initiate within scatter matrix for class k as empty
             S_i = np.zeros((m, m))
             for row in X_i:
                 row = row.reshape(m, 1) # Reshape row to be vertical vector
