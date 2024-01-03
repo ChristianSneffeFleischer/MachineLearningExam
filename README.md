@@ -28,11 +28,9 @@ Project for Clothing classification, attempting to predict type of clothing from
 To be able to run our code and reproduce the results, there are a few things to consider:
 
 * the initial data is inside the 'data' folder, which is important to note, when reproducing the results
-* our custom made lda.py & bayes.py are in the repository, and are both already loaded into main.ipynb
+* our custom made lda.py and bayes.py are in the repository, and are both already loaded into main.ipynb
 * the main.ipynb contains all the code needed to be run, EXCEPT for the CNN classification ...
-* ... which is all inside the CNN.ipynb & can be run explicitly from that notebook.
-  
-
+* ... which is all inside the CNN.ipynb and can be run explicitly from that notebook.
 
 ### Authors
 
